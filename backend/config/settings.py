@@ -7,12 +7,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 
+def _env(name, default):
+    value = os.getenv(name)
+    return value if value else default
+
+
 def _env_list(name, default):
-    return [item.strip() for item in os.getenv(name, default).split(",") if item.strip()]
+    return [item.strip() for item in _env(name, default).split(",") if item.strip()]
 
 
-SECRET_KEY = os.getenv("SECRET_KEY", "keypass-dev-secret-key-change-me-0123456789")
-DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
+SECRET_KEY = _env("SECRET_KEY", "keypass-dev-secret-key-change-me-0123456789")
+DEBUG = _env("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = _env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
 
 INSTALLED_APPS = [
@@ -38,18 +43,18 @@ USE_TZ = True
 
 CORS_ALLOWED_ORIGINS = _env_list("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:8080")
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "keypass")
-MONGO_SERVER_TIMEOUT_MS = int(os.getenv("MONGO_SERVER_TIMEOUT_MS", "3000"))
+MONGO_URI = _env("MONGO_URI", "mongodb://localhost:27017")
+MONGO_DB_NAME = _env("MONGO_DB_NAME", "keypass")
+MONGO_SERVER_TIMEOUT_MS = int(_env("MONGO_SERVER_TIMEOUT_MS", "3000"))
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT", "")
-AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2025-04-01-preview")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.6-sol")
-OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "60"))
+OPENAI_API_KEY = _env("OPENAI_API_KEY", "")
+AZURE_OPENAI_ENDPOINT = _env("AZURE_OPENAI_ENDPOINT", "")
+AZURE_OPENAI_API_VERSION = _env("AZURE_OPENAI_API_VERSION", "2025-04-01-preview")
+OPENAI_MODEL = _env("OPENAI_MODEL", "gpt-5.6-sol")
+OPENAI_TIMEOUT_SECONDS = float(_env("OPENAI_TIMEOUT_SECONDS", "60"))
 
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", "12"))
+JWT_EXPIRY_HOURS = int(_env("JWT_EXPIRY_HOURS", "12"))
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["core.authentication.JWTAuthentication"],
